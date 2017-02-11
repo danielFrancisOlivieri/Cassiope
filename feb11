@@ -175,7 +175,7 @@ var otherproseSelected = {
 var letterSelected = {
     name : "letterSelected",
   isOn: false,
-  toAppend: " OR genre = 'Letter' " // CHANGED
+  toAppend: " genre = 'Letter' " // CHANGED
 };
 
 
@@ -415,16 +415,16 @@ else {
   });
 
 
-var masterCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE (1=1 )";
+var masterCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge ";
 
 
    var LayerActions = {
 
   all: function(){
 
-    sublayers[0].setSQL("SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE (1=1)");
+    sublayers[0].setSQL("SELECT * FROM cassiope_journey_name_finals_copy_2_merge ");
 
-	sublayers[1].setSQL("SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE (1=1)");
+	sublayers[1].setSQL("SELECT * FROM cassiope_journey_name_finals_copy_2_merge ");
 
   for (i = 0; i < allOptions.length; i++)
   {
@@ -436,12 +436,41 @@ var masterCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE 
 
   }
 
-
-
-
 	return true;
 
   },
+
+//this function is to be used by every different option
+// it should take the option name as a parameter and then
+
+  boxCheck: function(option){
+
+    if (option.isOn === false)
+    {
+
+      if (masterCall.includes("WHERE"))
+      {
+        masterCall = masterCall + " OR " + option.toAppend;
+        option.isOn = true;
+      }
+      else {
+        masterCall = masterCall + " WHERE ";
+        masterCall = masterCall + option.toAppend;
+        option.isOn = true;
+      }
+
+    }
+    else {
+      masterCall = masterCall.replace("OR " + option.toAppend, "");
+      option.isOn = false;
+      if (!masterCall.includes("="))
+      {
+        masterCall = masterCall.replace("WHERE", " ");
+      }
+    }
+
+  },
+
 
   letter: function(){
 
@@ -449,6 +478,7 @@ var masterCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE 
     {
       masterCall = masterCall.replace('undefined', '');
       masterCall = masterCall.replace(')', '');
+      console.log("our boy");
     letterSelected.isOn = true;
     // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
     masterCall = masterCall + letterSelected.toAppend + ") ";
@@ -1040,9 +1070,9 @@ console.log("master: " + masterCall);
 
               <ul class="dropdown-menu">
 
-			    <li><a href="#greek" id="greekSelected" class="button greek"> <input id = "greekSelected" class = "boxes" type="checkbox" name="Sea" change = "greek()" unchecked> Greek</a></li>
+			    <li><a href="#greek" id="greek" class="button greek"> <input id = "greekSelected" class = "boxes" type="checkbox" name="Sea" change = "greek()" unchecked> Greek</a></li>
 
-				<li><a href="#latin" id="latinSelected" class="button latin"> <input id = "latinSelected" class = "boxes" type="checkbox" name="Sea" change = "latin()" unchecked> Latin</a></li>
+				<li><a href="#latin" id="latin" class="button latin"> <input id = "latinSelected" class = "boxes" type="checkbox" name="Sea" change = "latin()" unchecked> Latin</a></li>
 
 				<li role="separator" class="divider"></li>
 
