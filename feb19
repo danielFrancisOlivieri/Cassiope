@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="">
+
+    <meta name="author" content="">
+
+    <link rel="icon" href="../../favicon.ico">
+
+
+
+    <title>Cassiope</title>
+
+
+
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <link href="theme.css" rel="stylesheet">
+
+
+
+	<link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.11/themes/css/cartodb.css" />
+
+
+
+	<style>
+
+		html, body {width:100%; height:100%; padding: 0; margin: 0;}
+
+		#cartodb-map {width: 100%; height:100%; background: black;}
+
+		#cartodb-map .cartodb-legend-stack {position: absolute; bottom: 90px; right: 10px;}
+
+
+    .onoffswitch {
+        position: relative; width: 90px;
+        margin-top: 5px;
+        -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+
+    }
+    .onoffswitch-checkbox {
+        display: none;
+    }
+    .onoffswitch-label {
+        display: block; overflow: hidden; cursor: pointer;
+        border: 2px solid #999999; border-radius: 20px;
+    }
+    .onoffswitch-inner {
+        display: block; width: 200%; margin-left: -100%;
+        transition: margin 0.3s ease-in 0s;
+    }
+    .onoffswitch-inner:before, .onoffswitch-inner:after {
+        display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 30px;
+        font-size: 14px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+        box-sizing: border-box;
+    }
+    .onoffswitch-inner:before {
+        content: "ON";
+        padding-left: 10px;
+        background-color: #34A7C1; color: #FFFFFF;
+    }
+    .onoffswitch-inner:after {
+        content: "OFF";
+        padding-right: 10px;
+        background-color: #EEEEEE; color: #999999;
+        text-align: right;
+    }
+    .onoffswitch-switch {
+        display: block; width: 18px; margin: 6px;
+        background: #FFFFFF;
+        position: absolute; top: 0; bottom: 0;
+        right: 56px;
+        border: 2px solid #999999; border-radius: 20px;
+        transition: all 0.3s ease-in 0s;
+    }
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+        margin-left: 0;
+    }
+    .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+        right: 0px;
+    }
+
+.boxes
+{
+
+}
+
+	</style>
+
+	<style type="text/css">
+
+		.green {
+
+			background:#14b866;
+
+		}
+
+ </style>
+
+
+
+	<div id="map"></div>
+
+	<div id="cartodb-legend-stack"></div>
+
+<!-- includes toggle switch -->
+  <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+  <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+	  <script>
+
+var multipleOn = true;
+
+
+
+
+// objects that allow multiple to be selected
+// mode of travel
+var seaSelected = {
+  name : "seaSelected",
+  isOn: false,
+  toAppend: " AND mode_of_travel = 'Sea' "
+};
+var landSelected = {
+  name : "landSelected",
+  isOn: false,
+  toAppend: " AND mode_of_travel = 'Land' "
+};
+// language
+var latinSelected = {
+    name : "latinSelected",
+  isOn: false,
+  toAppend: " AND language = 'Latin' "
+};
+var greekSelected = {
+  name : "greekSelected",
+  isOn: false,
+  toAppend: " AND language = 'Greek' "
+};
+
+
+var geographySelected = {
+  name : "geographySelected",
+  isOn: false,
+  toAppend: " AND genre = 'Geography' "
+};
+
+var biographySelected = {
+  name : "biographySelected",
+  isOn: false,
+  toAppend: " AND genre = 'Biography' "
+};
+
+var philosophySelected = {
+  name : "philosophySelected",
+  isOn: false,
+  toAppend: " AND genre = 'Philosophy' "
+};
+
+var otherproseSelected = {
+    name : "otherproseSelected",
+  isOn: false,
+  toAppend: " AND genre = 'Other Prose' "
+};
+
+var letterSelected = {
+    name : "letterSelected",
+  isOn: false,
+  toAppend: " genre = 'Letter' " // CHANGED
+};
+
+
+
+var ciceroSelected = {
+  name : "ciceroSelected",
+  isOn: false,
+  toAppend: " AND author = 'Cicero' "
+};
+
+var epictetusSelected = {
+    name : "epictetusSelected",
+  isOn: false,
+  toAppend: " AND author = 'Epictetus' "
+};
+
+var galenSelected = {
+  name : "galenSelected",
+  isOn: false,
+  toAppend: " AND author = 'Galen' "
+};
+
+var gelliusSelected = {
+  name: "gelliusSelected",
+  isOn: false,
+  toAppend: " AND author = 'Gellius' "
+};
+
+var jeromeSelected = {
+  name: "jeromeSelected",
+  isOn: false,
+  toAppend: " AND author = 'Jerome' "
+};
+
+var justinianSelected = {
+    name: "justinianSelected",
+  isOn: false,
+  toAppend: " AND author = 'Justinian' "
+};
+
+var straboSelected = {
+  name: "straboSelected",
+  isOn: false,
+  toAppend: " AND author = 'Strabo' "
+};
+
+var suetoniusSelected = {
+  name: "suetoniusSelected",
+  isOn: false,
+  toAppend: " AND author = 'Suetonius' "
+};
+
+
+var unknownauthorSelected = {
+  name: "unknownauthorSelected",
+  isOn: false,
+  toAppend: " AND author = 'Unknown' "
+};
+
+
+var allOptions = [seaSelected, landSelected, greekSelected, latinSelected, geographySelected, biographySelected, philosophySelected, otherproseSelected, letterSelected, ciceroSelected, epictetusSelected, galenSelected, gelliusSelected, jeromeSelected, justinianSelected, straboSelected, suetoniusSelected, unknownauthorSelected];
+
+var checkBoxIds = ["cicero", "epictetus", "galen", "gellius", "jerome", "justinian", "strabo", "suetonius", "unknownauthor", "biography", "geography", "letter", "otherprose", "philosophy", "greek", "latin", "land", "sea"];
+// turns the multiple on or off
+// when it is off it clears all selected
+function flipSwitch ()
+{
+  if (multipleOn === true)
+  {
+    console.log("now false");
+    multipleOn = false;
+
+  }
+  else {
+    {
+      multipleOn = true;
+        console.log("now true");
+        for (i = 0; i < allOptions.length; i++)
+        {
+          allOptions[i].isOn = false;
+          console.log( "setting them: " + allOptions[i].isOn);
+        }
+
+        // display
+        $(".boxes").css("display", "inline");
+    }
+  }
+}
+
+// this function appends an & statement to the sql call for each selected variable that is true
+function appendIfTrue(call, isSelected)
+{
+  if (isSelected.isOn === true)
+  {
+    var finalCall = call + isSelected.toAppend;
+    console.log("final call is: " + finalCall);
+    return finalCall;
+  }
+  else {
+    {
+      finalCall = call.replace(isSelected.toAppend, ' ');
+      finalCall = call.replace(isSelected.toAppend, ' '); // double is a kluge for if there happen to be two instances of the string
+      return finalCall;
+    }
+  }
+}
+
+function multipleSelected(sqlCall, multipleOn)
+{
+  if (multipleOn)
+  {
+  sqlCall = appendIfTrue(sqlCall, seaSelected);
+  sqlCall = appendIfTrue(sqlCall, landSelected);
+  sqlCall = appendIfTrue(sqlCall, latinSelected);
+  sqlCall = appendIfTrue(sqlCall, greekSelected);
+  return sqlCall;
+}
+else {
+  {
+    return sqlCall;
+  }
+}
+}
+
+    var map;
+
+    function init(){
+
+      // initiate leaflet map
+
+      map = new L.Map('cartodb-map', {
+
+		zoomControl: false,
+
+        center: [40,18],
+
+        zoom: 7
+
+      })
+
+
+
+	new L.Control.Zoom({ position: 'bottomright' }).addTo(map);
+
+
+
+	var myLayers = L.tileLayer('http://{s}.tiles.mapbox.com/v4/gabrielleh.o10ic6ml/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiZ2FicmllbGxlaCIsImEiOiJjaWdhd2toNXMxOWF6dmlseDRiem93bTI3In0.HZ7mExYcek13JU3nhgQVmQ', {
+
+  attribution: 'Mapbox <a href="http://mapbox.com/about/maps" target="_blank">Terms &amp; Feedback</a>'}).addTo(map);
+
+
+
+	myLayers.setOpacity(.5);
+
+
+
+	var layerUrl = 'https://olivierid.cartodb.com/api/v2/viz/ffa606ed-3006-4785-9411-da9f21521a57/viz.json';
+
+
+
+	var sublayers = [];
+
+
+
+		cartodb.createLayer(map, layerUrl)
+
+		.addTo(map)
+
+		.on('done', function(layer) {
+
+
+
+		var subLayerOptions = {
+
+      sql: "SELECT * FROM cassiope_journey_name_finals_copy_2_merge",
+
+      cartocss: "#cassiope_journey_name_finals_copy_2_merge{  	  line-width: 3;  line-opacity: 1;  line-dasharray: 5,5;} 	  #final_merge[author='Epictetus'] {  line-color: #3EA99F;} 	  #final_merge[author='Galen'] {line-color: #4E9258;} 	  #final_merge[author='Strabo'] {line-color: #52D017;}  	  #final_merge[author='Cicero'] {   line-color: #850200;} 	  #final_merge[author='Gellius'] {line-color: #F11810;} 	  #final_merge[author='Jerome'] {line-color: #e885ad; } 	  #final_merge[author='Justinian'] {line-color: #b780d1;} 	  #final_merge[author='Suetonius'] {line-color: #7B00B4;} 	  #final_merge[author='Unknown'] {line-color: #FFFFFF;}"    }
+
+
+
+    var sublayer = layer.getSubLayer(0);
+
+
+
+    sublayer.set(subLayerOptions);
+
+
+
+		sublayers.push(sublayer);
+
+		}).on('error', function() {
+
+			//log the error
+
+  });
+
+
+
+	var layer2Url = 'https://gabrielleh.cartodb.com/api/v2/viz/ea5e15f0-ef89-11e5-a0a0-0ea31932ec1d/viz.json';
+
+
+
+	var sublayers2 = [];
+
+
+
+		cartodb.createLayer(map, layer2Url)
+
+		.addTo(map)
+
+		.on('done', function(layer) {
+
+
+
+		var subLayer2Options = {
+
+      sql: "SELECT * FROM cassiope_journey_name_finals_copy_2_merge",
+
+	  }
+
+
+
+    var sublayer2 = layer.getSubLayer(0);
+
+
+
+    sublayer2.set(subLayer2Options);
+
+
+
+		sublayers.push(sublayer2);
+
+		}).on('error', function() {
+
+			//log the error
+
+  });
+
+
+var masterCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge ";
+
+
+   var LayerActions = {
+
+  all: function(){
+
+    sublayers[0].setSQL("SELECT * FROM cassiope_journey_name_finals_copy_2_merge ");
+
+	sublayers[1].setSQL("SELECT * FROM cassiope_journey_name_finals_copy_2_merge ");
+
+  for (i = 0; i < allOptions.length; i++)
+  {
+    allOptions[i].isOn = false;
+    console.log( "setting them: " + allOptions[i].isOn);
+
+//var idToChange = "#" + allOptions[i];
+    $("#" + allOptions[i].name  ).prop('checked', false);
+
+  }
+
+	return true;
+
+  },
+
+
+//this function is to be used by every different option
+// it should take the option name as a parameter and then
+
+
+  boxCheck: function(option){
+
+
+
+    if (option.isOn === false)
+    {
+
+      if (masterCall.includes("WHERE"))
+      {
+        masterCall = masterCall + " OR " + option.toAppend;
+        option.isOn = true;
+      }
+      else {
+        masterCall = masterCall + " WHERE ";
+        masterCall = masterCall + option.toAppend;
+        option.isOn = true;
+      }
+
+    }
+    else {
+      masterCall = masterCall.replace("OR " + option.toAppend, "");
+      option.isOn = false;
+      if (!masterCall.includes("="))
+      {
+        masterCall = masterCall.replace("WHERE", " ");
+      }
+    }
+
+  },
+
+
+  letter: function(){
+
+    $(document).ready(function(){
+boxCheck(letterSelected);
+  });
+
+/*
+    if (letterSelected.isOn === false)
+    {
+      masterCall = masterCall.replace('undefined', '');
+      masterCall = masterCall.replace(')', '');
+      console.log("our boy");
+    letterSelected.isOn = true;
+    // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+    masterCall = masterCall + letterSelected.toAppend + ") ";
+     console.log("master: " + masterCall);
+     sublayers[0].setSQL(masterCall);
+     sublayers[1].setSQL(masterCall);
+    return true;
+    }
+    else {
+      masterCall = masterCall.replace('undefined', '');
+      letterSelected.isOn = false;
+      masterCall = masterCall.replace(letterSelected.toAppend, '');
+      masterCall = masterCall.replace(letterSelected.toAppend, '');
+      masterCall = masterCall.replace(letterSelected.toAppend, '');
+      sublayers[0].setSQL(masterCall);
+      sublayers[1].setSQL(masterCall);
+      console.log("master: " + masterCall);
+      return false;
+    }
+*/
+  },
+
+  otherprose: function(){
+    boxCheck(otherprose);
+/*
+    if (otherproseSelected.isOn === false)
+    {
+      masterCall = masterCall.replace('undefined', '');
+    otherproseSelected.isOn = true;
+    // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+    masterCall = masterCall + otherproseSelected.toAppend;
+     console.log("master: " + masterCall);
+     sublayers[0].setSQL(masterCall);
+     sublayers[1].setSQL(masterCall);
+    return true;
+    }
+    else {
+      otherproseSelected.isOn = false;
+        masterCall = masterCall.replace('undefined', '');
+      masterCall = masterCall.replace(otherproseSelected.toAppend, '');
+      masterCall = masterCall.replace(otherproseSelected.toAppend, '');
+      masterCall = masterCall.replace(otherproseSelected.toAppend, '');
+      console.log("master: " + masterCall);
+      sublayers[0].setSQL(masterCall);
+      sublayers[1].setSQL(masterCall);
+      return false;
+    }
+*/
+  },
+
+   biography: function(){
+     boxCheck(biographySelected);
+/*
+     if (biographySelected.isOn === false)
+     {
+       masterCall = masterCall.replace('undefined', '');
+     biographySelected.isOn = true;
+     // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+     masterCall = masterCall + biographySelected.toAppend;
+      console.log("master: " + masterCall);
+      sublayers[0].setSQL(masterCall);
+      sublayers[1].setSQL(masterCall);
+     return true;
+     }
+     else {
+       masterCall = masterCall.replace('undefined', '');
+       biographySelected.isOn = false;
+       masterCall = masterCall.replace(biographySelected.toAppend, '');
+       masterCall = masterCall.replace(biographySelected.toAppend, '');
+       masterCall = masterCall.replace(biographySelected.toAppend, '');
+       sublayers[0].setSQL(masterCall);
+       sublayers[1].setSQL(masterCall);
+       console.log("master: " + masterCall);
+       return false;
+     }
+*/
+  },
+
+   geography: function(){
+     boxCheck(geographySelected);
+/*
+     if (geographySelected.isOn === false)
+     {
+       masterCall = masterCall.replace('undefined', '');
+     geographySelected.isOn = true;
+     // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+     masterCall = masterCall + geographySelected.toAppend;
+      console.log("master: " + masterCall);
+      sublayers[0].setSQL(masterCall);
+      sublayers[1].setSQL(masterCall);
+     return true;
+     }
+     else {
+       masterCall = masterCall.replace('undefined', '');
+       geographySelected.isOn = false;
+       masterCall = masterCall.replace(geographySelected.toAppend, '');
+       masterCall = masterCall.replace(geographySelected.toAppend, '');
+       masterCall = masterCall.replace(geographySelected.toAppend, '');
+       sublayers[0].setSQL(masterCall);
+       sublayers[1].setSQL(masterCall);
+       console.log("master: " + masterCall);
+       return false;
+     }
+     */
+
+  },
+
+   philosophy: function(){
+     boxCheck(philosophySelected);
+/*
+          if (philosophySelected.isOn === false)
+          {
+            masterCall = masterCall.replace('undefined', '');
+          philosophySelected.isOn = true;
+          // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+          masterCall = masterCall + philosophySelected.toAppend;
+           console.log("master: " + masterCall);
+           sublayers[0].setSQL(masterCall);
+           sublayers[1].setSQL(masterCall);
+          return true;
+          }
+          else {
+            philosophySelected.isOn = false;
+            masterCall = masterCall.replace('undefined', '');
+            masterCall = masterCall.replace(philosophySelected.toAppend, '');
+            masterCall = masterCall.replace(philosophySelected.toAppend, '');
+            masterCall = masterCall.replace(philosophySelected.toAppend, '');
+            masterCall = masterCall.replace(philosophySelected.toAppend, '');
+            sublayers[0].setSQL(masterCall);
+            sublayers[1].setSQL(masterCall);
+            console.log("master: " + masterCall);
+            return false;
+          }
+*/
+
+  },
+
+   greek: function(){
+     boxCheck(greekSelected);
+/*
+     if (greekSelected.isOn === false)
+     {
+       masterCall = masterCall.replace('undefined', '');
+     greekSelected.isOn = true;
+     // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+     masterCall = masterCall + greekSelected.toAppend;
+      console.log("master: " + masterCall);
+      sublayers[0].setSQL(masterCall);
+      sublayers[1].setSQL(masterCall);
+      console.log("master: " + masterCall);
+     return true;
+     }
+     else {
+       masterCall = masterCall.replace('undefined', '');
+       greekSelected.isOn = false;
+       masterCall = masterCall.replace(greekSelected.toAppend, '');
+       masterCall = masterCall.replace(greekSelected.toAppend, '');
+       masterCall = masterCall.replace(greekSelected.toAppend, '');
+       sublayers[0].setSQL(masterCall);
+       sublayers[1].setSQL(masterCall);
+       console.log("master: " + masterCall);
+       return false;
+     }
+     */
+
+  },
+
+   latin: function(){
+boxCheck(latinSelected);
+
+/*
+     if (latinSelected.isOn === false)
+     {
+       masterCall = masterCall.replace('undefined', '');
+     latinSelected.isOn = true;
+     // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+     masterCall = masterCall + latinSelected.toAppend;
+      console.log("master: " + masterCall);
+      sublayers[0].setSQL(masterCall);
+      sublayers[1].setSQL(masterCall);
+      console.log("master: " + masterCall);
+     return true;
+     }
+     else {
+       masterCall = masterCall.replace('undefined', '');
+       latinSelected.isOn = false;
+       masterCall = masterCall.replace(latinSelected.toAppend, '');
+        masterCall = masterCall.replace(latinSelected.toAppend, '');
+         masterCall = masterCall.replace(latinSelected.toAppend, '');
+       sublayers[0].setSQL(masterCall);
+       sublayers[1].setSQL(masterCall);
+       return false;
+     }
+*/
+  },
+
+  land: function(){
+boxCheck(landSelected);
+    /*
+if (landSelected.isOn === false)
+{
+landSelected.isOn = true;
+// sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+masterCall = masterCall + landSelected.toAppend;
+ console.log("master: " + masterCall);
+ sublayers[0].setSQL(masterCall);
+ sublayers[1].setSQL(masterCall);
+return true;
+}
+else {
+  landSelected.isOn = false;
+  masterCall = masterCall.replace(landSelected.toAppend, '');
+  masterCall = masterCall.replace(landSelected.toAppend, '');
+  masterCall = masterCall.replace(landSelected.toAppend, '');
+  sublayers[0].setSQL(masterCall);
+  sublayers[1].setSQL(masterCall);
+  console.log("master: " + masterCall);
+  return false;
+}
+*/
+  },
+
+  sea: function(){
+    boxCheck(seaSelected);
+    /*
+    if (seaSelected.isOn === false)
+    {
+seaSelected.isOn = true;
+// sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+masterCall = masterCall + seaSelected.toAppend;
+     console.log("master: " + masterCall);
+     sublayers[0].setSQL(masterCall);
+     sublayers[1].setSQL(masterCall);
+    return true;
+    }
+    else {
+      seaSelected.isOn = false;
+      masterCall = masterCall.replace(seaSelected.toAppend, '');
+      masterCall = masterCall.replace(seaSelected.toAppend, '');
+      masterCall = masterCall.replace(seaSelected.toAppend, '');
+      sublayers[0].setSQL(masterCall);
+      sublayers[1].setSQL(masterCall);
+console.log("master: " + masterCall);
+      return false;
+    }
+*/
+
+  },
+
+   cicero: function(){
+
+     boxCheck(ciceroSelected);
+/*
+     if (ciceroSelected.isOn === false)
+     {
+ ciceroSelected.isOn = true;
+ // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+ masterCall = masterCall + ciceroSelected.toAppend;
+      console.log("master: " + masterCall);
+      sublayers[0].setSQL(masterCall);
+      sublayers[1].setSQL(masterCall);
+     return true;
+     }
+     else {
+       ciceroSelected.isOn = false;
+       masterCall = masterCall.replace(ciceroSelected.toAppend, '');
+       masterCall = masterCall.replace(ciceroSelected.toAppend, '');
+       masterCall = masterCall.replace(ciceroSelected.toAppend, '');
+       sublayers[0].setSQL(masterCall);
+       sublayers[1].setSQL(masterCall);
+ console.log("master: " + masterCall);
+       return false;
+     }
+     */
+
+  },
+
+  epictetus: function(){
+    boxCheck(epictetusSelected);
+/*
+    if (epictetusSelected.isOn === false)
+    {
+epictetusSelected.isOn = true;
+// sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+masterCall = masterCall + epictetusSelected.toAppend;
+     console.log("master: " + masterCall);
+     sublayers[0].setSQL(masterCall);
+     sublayers[1].setSQL(masterCall);
+    return true;
+    }
+    else {
+      epictetusSelected.isOn = false;
+      masterCall = masterCall.replace(epictetusSelected.toAppend, '');
+      masterCall = masterCall.replace(epictetusSelected.toAppend, '');
+      masterCall = masterCall.replace(epictetusSelected.toAppend, '');
+      sublayers[0].setSQL(masterCall);
+      sublayers[1].setSQL(masterCall);
+console.log("master: " + masterCall);
+      return false;
+    }
+*/
+  },
+
+  galen: function(){
+boxCheck(galenSelected);
+/*
+    if (galenSelected.isOn === false)
+    {
+galenSelected.isOn = true;
+// sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+masterCall = masterCall + galenSelected.toAppend;
+     console.log("master: " + masterCall);
+     sublayers[0].setSQL(masterCall);
+     sublayers[1].setSQL(masterCall);
+    return true;
+    }
+    else {
+      galenSelected.isOn = false;
+      masterCall = masterCall.replace(galenSelected.toAppend, '');
+      masterCall = masterCall.replace(galenSelected.toAppend, '');
+      masterCall = masterCall.replace(galenSelected.toAppend, '');
+      sublayers[0].setSQL(masterCall);
+      sublayers[1].setSQL(masterCall);
+console.log("master: " + masterCall);
+      return false;
+    }
+*/
+  },
+
+  gellius: function(){
+    boxCheck(gelliusSelected);
+/*
+    if (gelliusSelected.isOn === false)
+    {
+  gelliusSelected.isOn = true;
+  // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+  masterCall = masterCall + gelliusSelected.toAppend;
+     console.log("master: " + masterCall);
+     sublayers[0].setSQL(masterCall);
+     sublayers[1].setSQL(masterCall);
+    return true;
+    }
+    else {
+      gelliusSelected.isOn = false;
+      masterCall = masterCall.replace(gelliusSelected.toAppend, '');
+      masterCall = masterCall.replace(gelliusSelected.toAppend, '');
+      masterCall = masterCall.replace(gelliusSelected.toAppend, '');
+      sublayers[0].setSQL(masterCall);
+      sublayers[1].setSQL(masterCall);
+  console.log("master: " + masterCall);
+      return false;
+    }
+*/
+  },
+
+   jerome: function(){
+boxCheck(jeromeSelected);
+/*
+     if (jeromeSelected.isOn === false)
+     {
+   jeromeSelected.isOn = true;
+   // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+   masterCall = masterCall + jeromeSelected.toAppend;
+      console.log("master: " + masterCall);
+      sublayers[0].setSQL(masterCall);
+      sublayers[1].setSQL(masterCall);
+     return true;
+     }
+     else {
+       jeromeSelected.isOn = false;
+       masterCall = masterCall.replace(jeromeSelected.toAppend, '');
+       masterCall = masterCall.replace(jeromeSelected.toAppend, '');
+       masterCall = masterCall.replace(jeromeSelected.toAppend, '');
+       sublayers[0].setSQL(masterCall);
+       sublayers[1].setSQL(masterCall);
+   console.log("master: " + masterCall);
+       return false;
+     }
+*/
+  },
+
+  justinian: function(){
+
+boxCheck(justinianSelected);
+/*
+    if (justinianSelected.isOn === false)
+    {
+  justinianSelected.isOn = true;
+  // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+  masterCall = masterCall + justinianSelected.toAppend;
+     console.log("master: " + masterCall);
+     sublayers[0].setSQL(masterCall);
+     sublayers[1].setSQL(masterCall);
+    return true;
+    }
+    else {
+      justinianSelected.isOn = false;
+      masterCall = masterCall.replace(justinianSelected.toAppend, '');
+      masterCall = masterCall.replace(justinianSelected.toAppend, '');
+      masterCall = masterCall.replace(justinianSelected.toAppend, '');
+      sublayers[0].setSQL(masterCall);
+      sublayers[1].setSQL(masterCall);
+  console.log("master: " + masterCall);
+      return false;
+    }
+*/
+  },
+
+  strabo: function(){
+boxCheck(straboSelected);
+/*
+    if (straboSelected.isOn === false)
+    {
+  straboSelected.isOn = true;
+  // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+  masterCall = masterCall + straboSelected.toAppend;
+     console.log("master: " + masterCall);
+     sublayers[0].setSQL(masterCall);
+     sublayers[1].setSQL(masterCall);
+    return true;
+    }
+    else {
+      straboSelected.isOn = false;
+      masterCall = masterCall.replace(straboSelected.toAppend, '');
+      masterCall = masterCall.replace(straboSelected.toAppend, '');
+      masterCall = masterCall.replace(straboSelected.toAppend, '');
+      sublayers[0].setSQL(masterCall);
+      sublayers[1].setSQL(masterCall);
+  console.log("master: " + masterCall);
+      return false;
+    }
+*/
+  },
+
+   suetonius: function(){
+boxCheck(suetoniusSelected);
+/*
+     if (suetoniusSelected.isOn === false)
+     {
+   suetoniusSelected.isOn = true;
+   // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+   masterCall = masterCall + suetoniusSelected.toAppend;
+      console.log("master: " + masterCall);
+      sublayers[0].setSQL(masterCall);
+      sublayers[1].setSQL(masterCall);
+     return true;
+     }
+     else {
+       suetoniusSelected.isOn = false;
+       masterCall = masterCall.replace(suetoniusSelected.toAppend, '');
+       masterCall = masterCall.replace(suetoniusSelected.toAppend, '');
+       masterCall = masterCall.replace(suetoniusSelected.toAppend, '');
+       sublayers[0].setSQL(masterCall);
+       sublayers[1].setSQL(masterCall);
+   console.log("master: " + masterCall);
+       return false;
+     }
+*/
+  },
+
+   unknownauthor: function(){
+boxCheck(unknownauthorSelected);
+/*
+     if (unknownauthor.isOn === false)
+     {
+   unknownauthor.isOn = true;
+   // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+   masterCall = masterCall + unknownauthor.toAppend;
+      console.log("master: " + masterCall);
+      sublayers[0].setSQL(masterCall);
+      sublayers[1].setSQL(masterCall);
+     return true;
+     }
+     else {
+       unknownauthor.isOn = false;
+       masterCall = masterCall.replace(unknownauthor.toAppend, '');
+       masterCall = masterCall.replace(unknownauthor.toAppend, '');
+       masterCall = masterCall.replace(unknownauthor.toAppend, '');
+       sublayers[0].setSQL(masterCall);
+       sublayers[1].setSQL(masterCall);
+   console.log("master: " + masterCall);
+       return false;
+     }
+*/
+  },
+
+}
+
+
+
+
+
+  $('.button').click(function() {
+
+	$('.button').removeClass('green');
+
+	$(this).addClass('green');
+
+	LayerActions[$(this).attr('id')]();
+
+});
+
+
+
+}
+
+  </script>
+
+
+
+  </head>
+
+
+
+  <body role="document">
+
+
+
+  <body onload="init()">
+
+
+
+  <div id='cartodb-map'></div>
+
+
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+
+      <div class="container">
+
+        <div class="navbar-header">
+
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+
+            <span class="sr-only">Toggle navigation</span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+
+            <span class="icon-bar"></span>
+
+          </button>
+
+          <a class="navbar-brand" href="#">Cassiope</a>
+
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+
+          <ul class="nav navbar-nav">
+
+            <li class="dropdown">
+
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Author <span class="caret"></span></a>
+
+              <ul class="dropdown-menu">
+
+			    <li><li><a href="#cicero" id="cicero" class="button cicero"> <input id = "ciceroSelected" class = "boxes" type="checkbox" name="Sea" change = "cicero()" unchecked> Cicero</a></li>
+
+				<li><a href="#epictetus" id="epictetus" class="button epictetus"> <input id = "epictetusSelected" class = "boxes" type="checkbox" name="Sea" change = "epictetus()" unchecked>  Epictetus</a></li>
+
+				<li><a href="#galen" id="galen" class="button galen"> <input id = "galenSelected" class = "boxes" type="checkbox" name="Sea" change = "galen()" unchecked> Galen</a></li>
+
+				<li><a href="#gellius" id="gellius" class="button gellius"> <input id = "gelliusSelected" class = "boxes" type="checkbox" name="Sea" change = "gellius()" unchecked> Gellius</a></li>
+
+				<li><a href="#jerome" id="jerome" class="button jerome"> <input id = "jeromeSelected" class = "boxes" type="checkbox" name="Sea" change = "jerome()" unchecked> Jerome</a></li>
+
+				<li><a href="#justinian" id="justinian" class="button justinian"> <input id = "justinianSelected" class = "boxes" type="checkbox" name="Sea" change = "justinian()" unchecked> Justinian</a></li>
+
+				<li><a href="#strabo" id="strabo" class="button strabo"> <input id = "straboSelected" class = "boxes" type="checkbox" name="Sea" change = "strabo()" unchecked> Strabo</a></li>
+
+				<li><a href="#suetonius" id="suetonius" class="button suetonius"> <input id = "suetoniusSelected" class = "boxes" type="checkbox" name="Sea" change = "suetonius()" unchecked> Suetonius</a></li>
+
+				<li><a href="#unknownauthor" id="unknownauthor" class="button unknownauthor"> <input id = "unknownauthorSelected" class = "boxes" type="checkbox" name="Sea" change = "unknownauthor()" unchecked> Unknown</a></li>
+
+				<li role="separator" class="divider"></li>
+
+				<li><a href="#all" id="all" class="button all">All</a></li>
+
+              </ul>
+
+            </li>
+
+			<li class="dropdown">
+
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-multiselectable="true">Genre <span class="caret"></span></a>
+
+              <ul class="dropdown-menu">
+
+				<li><a href="#biography" name="genre" id="biography" class="button biography"> <input id = "biographySelected" class = "boxes" type="checkbox" name="Sea" change = "biography()" unchecked> Biography</a></li>
+
+				<li><a href="#geography" name="genre" id="geography" class="button geography"> <input id = "geographySelected" class = "boxes" type="checkbox" name="Sea" change = "geography()" unchecked> Geography</a></li>
+
+				<li><a href="#letter" name="genre" id="letter" class="button letter"> <input id = "letterSelected" class = "boxes" type="checkbox" name="Sea" change = "letter()" unchecked> Letter</a></li>
+
+				<li><a href="#otherprose" name="genre" id="otherprose" class="button otherprose"> <input id = "otherproseSelected" class = "boxes" type="checkbox" name="Sea" change = "otherprose()" unchecked> Other Prose</a></li>
+
+				<li><a href="#philosophy" name="genre" id="philosophy" class="button philosophy"> <input id = "philosophySelected" class = "boxes" type="checkbox" name="Sea" change = "philosophy()" unchecked> Philosophy</a></li>
+
+			    <li role="separator" class="divider"></li>
+
+				<li><a href="#all" id="all" class="button all">All</a></li>
+
+			   </ul>
+
+            </li>
+
+			<li class="dropdown">
+
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Language <span class="caret"></span></a>
+
+              <ul class="dropdown-menu">
+
+			    <li><a href="#greek" id="greek" class="button greek"> <input id = "greekSelected" class = "boxes" type="checkbox" name="Sea" change = "greek()" unchecked> Greek</a></li>
+
+				<li><a href="#latin" id="latin" class="button latin"> <input id = "latinSelected" class = "boxes" type="checkbox" name="Sea" change = "latin()" unchecked> Latin</a></li>
+
+				<li role="separator" class="divider"></li>
+
+				<li><a href="#all" id="all" class="button all">All</a></li>
+
+              </ul>
+
+            </li>
+
+			<li class="dropdown">
+
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Mode of Travel <span class="caret"></span></a>
+
+              <ul class="dropdown-menu">
+
+			    <li><a id="land" class="button land"> <input id = "landSelected" class = "boxes" type="checkbox" name="Sea" change = "land()" unchecked> Land</a></li>
+
+				<li><a href="#sea" id="sea" class="button sea"> <input id = "seaSelected" class = "boxes" type="checkbox" name="Sea" value="Sea" change = "sea()" unchecked>  Sea</a></li>
+
+				<li role="separator" class="divider"></li>
+
+				<li><a href="#all" id="all" class="button all">All</a></li>
+
+              </ul>
+
+            </li>
+            <!--
+  <li class="dropdown">
+      <div class="onoffswitch" id="multipleSwitchDiv" tooltip = "this is a test" >
+          <input onchange = "flipSwitch()" type="checkbox" name="onoffswitch" value = "off" class="onoffswitch-checkbox" id="multipleSwitch" unchecked>
+          <label class="onoffswitch-label" for="multipleSwitch">
+              <span class="onoffswitch-inner"></span>
+              <span class="onoffswitch-switch"></span>
+          </label>
+      </div>
+    </li>
+  -->
+          </ul>
+        </div>
+
+      </div>
+
+    </nav>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+	<script src="http://libs.cartocdn.com/cartodb.js/v3/3.11/cartodb.js"></script>
+
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+  </body>
+
+</html>
