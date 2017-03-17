@@ -132,7 +132,7 @@ var seaSelected = {
 };
 var landSelected = {
   isOn: false,
-  toAppend: "  mode_of_travel = 'L' "
+  toAppend: "  mode_of_travel = 'Land' "
 };
 // language
 var latinSelected = {
@@ -401,12 +401,13 @@ else {
 
   });
 
-var genre, author;
+var genre, author, modeOfTravel, language;
 genre = "1=1";
 author = "1=1";
 authorList = [];
 genreList = [];
-
+modeOfTravelList = [];
+languageList = [];
 var masterCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE 1=1 OR (" + genre + ") OR (" + author +  "  )";
 
 function buildTheCall() {
@@ -441,6 +442,36 @@ if (genreList.length > 0)
       arrayOfOptionToAddToCall.push(genre);
 }
 
+// checks languageList length then builds its part of the call
+if (languageList.length > 0)
+{
+  language = languageList[0];
+
+  for (i = 1; i < languageList.length; i++)
+  {
+    language += " OR " + languageList[i];
+  }
+    language = " ( " + language + " )";
+      arrayOfOptionToAddToCall.push(language);
+}
+
+
+
+// checks modeOfTravelList length then builds its part of the call
+if (modeOfTravelList.length > 0)
+{
+  modeOfTravel = modeOfTravelList[0];
+
+  for (i = 1; i < modeOfTravelList.length; i++)
+  {
+    modeOfTravel += " OR " + modeOfTravelList[i];
+  }
+    modeOfTravel = " ( " + modeOfTravel + " )";
+      arrayOfOptionToAddToCall.push(modeOfTravel);
+}
+
+
+
 if (arrayOfOptionToAddToCall.length > 0)
 {
 ToAddToEndOfCall = arrayOfOptionToAddToCall[0];
@@ -460,7 +491,7 @@ sublayers[0].setSQL(masterCall);
 sublayers[1].setSQL(masterCall);
 
 console.log(masterCall);
-
+console.log(ToAddToEndOfCall);
 
 }
 
@@ -658,7 +689,7 @@ $(".boxes").attr('checked', false);
      {
    greekSelected.isOn = true;
    // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
-   genreList.push(greekSelected.toAppend);
+   languageList.push(greekSelected.toAppend);
     //  console.log("master: " + masterCall);
     //  sublayers[0].setSQL(masterCall);
     //  sublayers[1].setSQL(masterCall);
@@ -669,11 +700,11 @@ $(".boxes").attr('checked', false);
      else {
        greekSelected.isOn = false;
 
-   for (i = 0; i < genreList.length; i++)
+   for (i = 0; i < languageList.length; i++)
    {
-   if (authorList[i].includes(greekSelected.toAppend))
+   if (languageList[i].includes(greekSelected.toAppend))
    {
-    genreList.splice(i,1);
+    languageList.splice(i,1);
    }
    }
 
@@ -684,14 +715,15 @@ $(".boxes").attr('checked', false);
 
   },
 
-   latin: function(){
+   latin: function()
+   {
 
 
      if (latinSelected.isOn === false)
      {
    latinSelected.isOn = true;
    // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
-   genreList.push(latinSelected.toAppend);
+   languageList.push(latinSelected.toAppend);
     //  console.log("master: " + masterCall);
     //  sublayers[0].setSQL(masterCall);
     //  sublayers[1].setSQL(masterCall);
@@ -702,11 +734,11 @@ $(".boxes").attr('checked', false);
      else {
        latinSelected.isOn = false;
 
-   for (i = 0; i < genreList.length; i++)
+   for (i = 0; i < languageList.length; i++)
    {
-   if (authorList[i].includes(latinSelected.toAppend))
+   if (languageList[i].includes(latinSelected.toAppend))
    {
-    genreList.splice(i,1);
+    languageList.splice(i,1);
    }
    }
 
@@ -719,48 +751,65 @@ $(".boxes").attr('checked', false);
   },
 
   land: function(){
-if (landSelected.isOn === false)
-{
-landSelected.isOn = true;
-// sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
-masterCall = masterCall + landSelected.toAppend;
- console.log("master: " + masterCall);
- sublayers[0].setSQL(masterCall);
- sublayers[1].setSQL(masterCall);
-return true;
-}
-else {
-  landSelected.isOn = false;
-  masterCall = masterCall.replace(landSelected.toAppend, '');
-  masterCall = masterCall.replace(landSelected.toAppend, '');
-  masterCall = masterCall.replace(landSelected.toAppend, '');
-  sublayers[0].setSQL(masterCall);
-  sublayers[1].setSQL(masterCall);
-  console.log("master: " + masterCall);
-  return false;
-}
+
+     if (landSelected.isOn === false)
+     {
+   landSelected.isOn = true;
+   // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+   modeOfTravelList.push(landSelected.toAppend);
+    //  console.log("master: " + masterCall);
+    //  sublayers[0].setSQL(masterCall);
+    //  sublayers[1].setSQL(masterCall);
+
+    buildTheCall();
+     return true;
+     }
+     else {
+       landSelected.isOn = false;
+
+   for (i = 0; i < modeOfTravelList.length; i++)
+   {
+   if (modeOfTravelList[i].includes(landSelected.toAppend))
+   {
+    modeOfTravelList.splice(i,1);
+   }
+   }
+
+    buildTheCall();
+   console.log("master: " + masterCall);
+       return false;
+     }
+
 
   },
 
   sea: function(){
+
     if (seaSelected.isOn === false)
     {
-seaSelected.isOn = true;
-// sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
-masterCall = masterCall + seaSelected.toAppend;
-     console.log("master: " + masterCall);
-     sublayers[0].setSQL(masterCall);
-     sublayers[1].setSQL(masterCall);
+  seaSelected.isOn = true;
+  // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+  modeOfTravelList.push(seaSelected.toAppend);
+   //  console.log("master: " + masterCall);
+   //  sublayers[0].setSQL(masterCall);
+   //  sublayers[1].setSQL(masterCall);
+
+   buildTheCall();
     return true;
     }
     else {
       seaSelected.isOn = false;
-      masterCall = masterCall.replace(seaSelected.toAppend, '');
-      masterCall = masterCall.replace(seaSelected.toAppend, '');
-      masterCall = masterCall.replace(seaSelected.toAppend, '');
-      sublayers[0].setSQL(masterCall);
-      sublayers[1].setSQL(masterCall);
-console.log("master: " + masterCall);
+
+  for (i = 0; i < modeOfTravelList.length; i++)
+  {
+  if (modeOfTravelList[i].includes(seaSelected.toAppend))
+  {
+   modeOfTravelList.splice(i,1);
+  }
+  }
+
+   buildTheCall();
+  console.log("master: " + masterCall);
       return false;
     }
 
