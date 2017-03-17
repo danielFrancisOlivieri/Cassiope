@@ -405,16 +405,17 @@ var genre, author;
 genre = "1=1";
 author = "1=1";
 authorList = [];
-var masterCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE 1=1 AND (" + genre + ") AND (" + author +  "  )";
+genreList = [];
+
+var masterCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE 1=1 OR (" + genre + ") OR (" + author +  "  )";
 
 function buildTheCall() {
-  console.log("A f() I wrote is actually working!!!" + authorList[0] + authorList[1]);
+  console.log("A f() I wrote is actually working!!!" + authorList[0] + authorList[1]+ " length: " + authorList.length);
 
-if (authorList.length == 0)
-{
-  author = "1=1";
-}
-else
+arrayOfOptionToAddToCall = [];
+var ToAddToEndOfCall;
+// checks authorList length then builds its part of the call
+if (authorList.length > 0)
 {
   author = authorList[0];
 
@@ -422,10 +423,38 @@ else
   {
     author += " OR " + authorList[i];
   }
+  author = " ( " + author + " )";
+
+  arrayOfOptionToAddToCall.push(author);
 }
 
+// checks genreList length then builds its part of the call
+if (genreList.length > 0)
+{
+  genre = genreList[0];
 
-masterCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE 1=1 AND (" + genre + ") AND (" + author +  "  )";
+  for (i = 1; i < genreList.length; i++)
+  {
+    genre += " OR " + genreList[i];
+  }
+    genre = " ( " + genre + " )";
+      arrayOfOptionToAddToCall.push(genre);
+}
+
+if (arrayOfOptionToAddToCall.length > 0)
+{
+ToAddToEndOfCall = arrayOfOptionToAddToCall[0];
+
+for (i = 1; i < arrayOfOptionToAddToCall.length; i++)
+{
+  ToAddToEndOfCall += " OR " + arrayOfOptionToAddToCall[i];
+}
+}
+else {
+  ToAddToEndOfCall = "1=1";
+}
+
+masterCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE " + ToAddToEndOfCall;
 sublayers[0].setSQL(masterCall);
 
 sublayers[1].setSQL(masterCall);
@@ -440,15 +469,17 @@ console.log(masterCall);
   all: function(){
 
 
-  masterCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE 1=1 AND (" + genre + ") AND (" + author +  "  )";
+  masterCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE 1=1 OR (" + genre + ") OR (" + author +  "  )";
     sublayers[0].setSQL("SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE 1=1");
 
   sublayers[1].setSQL("SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE 1=1");
 
+console.log("master: " + masterCall);
   //buildTheCall();
 
   // empty authorList
   authorList = [];
+  genreList = [];
 
   for (i = 0; i < allOptions.length; i++)
   {
@@ -466,108 +497,124 @@ $(".boxes").attr('checked', false);
 
   letter: function(){
 
-    if (letterSelected.isOn === false)
-    {
-      masterCall = masterCall.replace('undefined', '');
+        if (letterSelected.isOn === false)
+        {
     letterSelected.isOn = true;
     // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
-    masterCall = masterCall + letterSelected.toAppend;
-     console.log("master: " + masterCall);
-     sublayers[0].setSQL(masterCall);
-     sublayers[1].setSQL(masterCall);
-    return true;
-    }
-    else {
-      masterCall = masterCall.replace('undefined', '');
-      letterSelected.isOn = false;
-      masterCall = masterCall.replace(letterSelected.toAppend, '');
-      masterCall = masterCall.replace(letterSelected.toAppend, '');
-      masterCall = masterCall.replace(letterSelected.toAppend, '');
-      sublayers[0].setSQL(masterCall);
-      sublayers[1].setSQL(masterCall);
-      console.log("master: " + masterCall);
-      return false;
+    genreList.push(letterSelected.toAppend);
+       //  console.log("master: " + masterCall);
+       //  sublayers[0].setSQL(masterCall);
+       //  sublayers[1].setSQL(masterCall);
+
+       buildTheCall();
+        return true;
+        }
+        else {
+          letterSelected.isOn = false;
+
+    for (i = 0; i < genreList.length; i++)
+    {
+     if (genreList[i].includes(letterSelected.toAppend))
+     {
+       genreList.splice(i,1);
+     }
     }
 
+       buildTheCall();
+    console.log("master: " + masterCall);
+          return false;
+        }
   },
 
   otherprose: function(){
 
-
     if (otherproseSelected.isOn === false)
     {
-      masterCall = masterCall.replace('undefined', '');
-    otherproseSelected.isOn = true;
-    // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
-    masterCall = masterCall + otherproseSelected.toAppend;
-     console.log("master: " + masterCall);
-     sublayers[0].setSQL(masterCall);
-     sublayers[1].setSQL(masterCall);
+  otherproseSelected.isOn = true;
+  // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+  genreList.push(otherproseSelected.toAppend);
+   //  console.log("master: " + masterCall);
+   //  sublayers[0].setSQL(masterCall);
+   //  sublayers[1].setSQL(masterCall);
+
+   buildTheCall();
     return true;
     }
     else {
       otherproseSelected.isOn = false;
-        masterCall = masterCall.replace('undefined', '');
-      masterCall = masterCall.replace(otherproseSelected.toAppend, '');
-      masterCall = masterCall.replace(otherproseSelected.toAppend, '');
-      masterCall = masterCall.replace(otherproseSelected.toAppend, '');
-      console.log("master: " + masterCall);
-      sublayers[0].setSQL(masterCall);
-      sublayers[1].setSQL(masterCall);
+
+  for (i = 0; i < genreList.length; i++)
+  {
+  if (authorList[i].includes(otherproseSelected.toAppend))
+  {
+   genreList.splice(i,1);
+  }
+  }
+
+   buildTheCall();
+  console.log("master: " + masterCall);
       return false;
     }
-
   },
 
    biography: function(){
 
      if (biographySelected.isOn === false)
      {
-       masterCall = masterCall.replace('undefined', '');
-     biographySelected.isOn = true;
-     // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
-     masterCall = masterCall + biographySelected.toAppend;
-      console.log("master: " + masterCall);
-      sublayers[0].setSQL(masterCall);
-      sublayers[1].setSQL(masterCall);
+   biographySelected.isOn = true;
+   // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+   genreList.push(biographySelected.toAppend);
+    //  console.log("master: " + masterCall);
+    //  sublayers[0].setSQL(masterCall);
+    //  sublayers[1].setSQL(masterCall);
+
+    buildTheCall();
      return true;
      }
      else {
-       masterCall = masterCall.replace('undefined', '');
        biographySelected.isOn = false;
-       masterCall = masterCall.replace(biographySelected.toAppend, '');
-       masterCall = masterCall.replace(biographySelected.toAppend, '');
-       masterCall = masterCall.replace(biographySelected.toAppend, '');
-       sublayers[0].setSQL(masterCall);
-       sublayers[1].setSQL(masterCall);
-       console.log("master: " + masterCall);
+
+   for (i = 0; i < genreList.length; i++)
+   {
+   if (authorList[i].includes(biographySelected.toAppend))
+   {
+    genreList.splice(i,1);
+   }
+   }
+
+    buildTheCall();
+   console.log("master: " + masterCall);
        return false;
      }
 
   },
 
    geography: function(){
-
      if (geographySelected.isOn === false)
      {
-       masterCall = masterCall.replace('undefined', '');
-     geographySelected.isOn = true;
-     // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
-     masterCall = masterCall + geographySelected.toAppend;
-      console.log("master: " + masterCall);
-      sublayers[0].setSQL(masterCall);
-      sublayers[1].setSQL(masterCall);
+   geographySelected.isOn = true;
+   // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+   genreList.push(geographySelected.toAppend);
+    //  console.log("master: " + masterCall);
+    //  sublayers[0].setSQL(masterCall);
+    //  sublayers[1].setSQL(masterCall);
+
+    buildTheCall();
      return true;
      }
      else {
-       masterCall = masterCall.replace('undefined', '');
        geographySelected.isOn = false;
-       masterCall = masterCall.replace(geographySelected.toAppend, '');
-       masterCall = masterCall.replace(geographySelected.toAppend, '');
-       masterCall = masterCall.replace(geographySelected.toAppend, '');
-       sublayers[0].setSQL(masterCall);
-       sublayers[1].setSQL(masterCall);
-       console.log("master: " + masterCall);
+
+   for (i = 0; i < genreList.length; i++)
+   {
+   if (genreList[i].includes(geographySelected.toAppend))
+   {
+    genreList.splice(i,1);
+   }
+   }
+
+    buildTheCall();
+   console.log("master: " + masterCall);
        return false;
      }
 
@@ -575,31 +622,33 @@ $(".boxes").attr('checked', false);
 
    philosophy: function(){
 
+     if (philosophySelected.isOn === false)
+     {
+   philosophySelected.isOn = true;
+   // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+   genreList.push(philosophySelected.toAppend);
+    //  console.log("master: " + masterCall);
+    //  sublayers[0].setSQL(masterCall);
+    //  sublayers[1].setSQL(masterCall);
 
-          if (philosophySelected.isOn === false)
-          {
-            masterCall = masterCall.replace('undefined', '');
-          philosophySelected.isOn = true;
-          // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
-          masterCall = masterCall + philosophySelected.toAppend;
-           console.log("master: " + masterCall);
-           sublayers[0].setSQL(masterCall);
-           sublayers[1].setSQL(masterCall);
-          return true;
-          }
-          else {
-            philosophySelected.isOn = false;
-            masterCall = masterCall.replace('undefined', '');
-            masterCall = masterCall.replace(philosophySelected.toAppend, '');
-            masterCall = masterCall.replace(philosophySelected.toAppend, '');
-            masterCall = masterCall.replace(philosophySelected.toAppend, '');
-            masterCall = masterCall.replace(philosophySelected.toAppend, '');
-            sublayers[0].setSQL(masterCall);
-            sublayers[1].setSQL(masterCall);
-            console.log("master: " + masterCall);
-            return false;
-          }
+    buildTheCall();
+     return true;
+     }
+     else {
+       philosophySelected.isOn = false;
 
+   for (i = 0; i < genreList.length; i++)
+   {
+   if (authorList[i].includes(philosophySelected.toAppend))
+   {
+    genreList.splice(i,1);
+   }
+   }
+
+    buildTheCall();
+   console.log("master: " + masterCall);
+       return false;
+     }
 
   },
 
@@ -607,25 +656,29 @@ $(".boxes").attr('checked', false);
 
      if (greekSelected.isOn === false)
      {
-       masterCall = masterCall.replace('undefined', '');
-     greekSelected.isOn = true;
-     // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
-     masterCall = masterCall + greekSelected.toAppend;
-      console.log("master: " + masterCall);
-      sublayers[0].setSQL(masterCall);
-      sublayers[1].setSQL(masterCall);
-      console.log("master: " + masterCall);
+   greekSelected.isOn = true;
+   // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+   genreList.push(greekSelected.toAppend);
+    //  console.log("master: " + masterCall);
+    //  sublayers[0].setSQL(masterCall);
+    //  sublayers[1].setSQL(masterCall);
+
+    buildTheCall();
      return true;
      }
      else {
-       masterCall = masterCall.replace('undefined', '');
        greekSelected.isOn = false;
-       masterCall = masterCall.replace(greekSelected.toAppend, '');
-       masterCall = masterCall.replace(greekSelected.toAppend, '');
-       masterCall = masterCall.replace(greekSelected.toAppend, '');
-       sublayers[0].setSQL(masterCall);
-       sublayers[1].setSQL(masterCall);
-       console.log("master: " + masterCall);
+
+   for (i = 0; i < genreList.length; i++)
+   {
+   if (authorList[i].includes(greekSelected.toAppend))
+   {
+    genreList.splice(i,1);
+   }
+   }
+
+    buildTheCall();
+   console.log("master: " + masterCall);
        return false;
      }
 
@@ -633,28 +686,35 @@ $(".boxes").attr('checked', false);
 
    latin: function(){
 
+
      if (latinSelected.isOn === false)
      {
-       masterCall = masterCall.replace('undefined', '');
-     latinSelected.isOn = true;
-     // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
-     masterCall = masterCall + latinSelected.toAppend;
-      console.log("master: " + masterCall);
-      sublayers[0].setSQL(masterCall);
-      sublayers[1].setSQL(masterCall);
-      console.log("master: " + masterCall);
+   latinSelected.isOn = true;
+   // sqlCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE mode_of_travel = 'Sea'";
+   genreList.push(latinSelected.toAppend);
+    //  console.log("master: " + masterCall);
+    //  sublayers[0].setSQL(masterCall);
+    //  sublayers[1].setSQL(masterCall);
+
+    buildTheCall();
      return true;
      }
      else {
-       masterCall = masterCall.replace('undefined', '');
        latinSelected.isOn = false;
-       masterCall = masterCall.replace(latinSelected.toAppend, '');
-        masterCall = masterCall.replace(latinSelected.toAppend, '');
-         masterCall = masterCall.replace(latinSelected.toAppend, '');
-       sublayers[0].setSQL(masterCall);
-       sublayers[1].setSQL(masterCall);
+
+   for (i = 0; i < genreList.length; i++)
+   {
+   if (authorList[i].includes(latinSelected.toAppend))
+   {
+    genreList.splice(i,1);
+   }
+   }
+
+    buildTheCall();
+   console.log("master: " + masterCall);
        return false;
      }
+
 
   },
 
