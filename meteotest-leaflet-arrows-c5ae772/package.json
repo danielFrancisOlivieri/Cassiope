@@ -1,0 +1,34 @@
+{
+  "name": "leaflet-arrows",
+  "version": "1.0.3",
+  "description": "Draw arrows on your Leaflet maps.",
+  "main": "leaflet-arrows.js",
+  "scripts": {
+    "test": "exit 0",
+    "build": "cp leaflet-arrows.js wind-scale.js ./docs"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Meteotest",
+    "email": "web@meteotest.ch",
+    "url": "http://meteotest.ch"
+  },
+  "maintainers": [
+    "Florian Mäder <florian.maeder@meteotest.ch>"
+  ],
+  "keywords": [
+    "leafletjs",
+    "arrows",
+    "layer",
+    "wind"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meteotest/leaflet-arrows.git"
+  },
+  "dependencies": {
+      "leaflet": "*"
+  },
+  "homepage": "http://meteotest.github.io/leaflet-arrows/",
+  "bugs": "https://github.com/meteotest/leaflet-arrows/issues"
+}
