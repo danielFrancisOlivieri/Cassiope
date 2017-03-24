@@ -410,6 +410,7 @@ modeOfTravelList = [];
 languageList = [];
 var masterCall = "SELECT * FROM cassiope_journey_name_finals_copy_2_merge WHERE 1=1 OR (" + genre + ") OR (" + author +  "  )";
 
+// creates the call
 function buildTheCall() {
   console.log("A f() I wrote is actually working!!!" + authorList[0] + authorList[1]+ " length: " + authorList.length);
 
@@ -478,7 +479,7 @@ ToAddToEndOfCall = arrayOfOptionToAddToCall[0];
 
 for (i = 1; i < arrayOfOptionToAddToCall.length; i++)
 {
-  ToAddToEndOfCall += " OR " + arrayOfOptionToAddToCall[i];
+  ToAddToEndOfCall += " AND " + arrayOfOptionToAddToCall[i];
 }
 }
 else {
@@ -508,9 +509,11 @@ console.log(ToAddToEndOfCall);
 console.log("master: " + masterCall);
   //buildTheCall();
 
-  // empty authorList
+  // empty all lists
   authorList = [];
   genreList = [];
+  modeOfTravelList = [];
+  languageList = [];
 
   for (i = 0; i < allOptions.length; i++)
   {
