@@ -35,6 +35,17 @@
 	<link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.11/themes/css/cartodb.css" />
 
 
+  <link rel="stylesheet" href="stylesheets/normalize.css">
+  <link rel="stylesheet" href="stylesheets/stylesheet.css">
+  <link rel="stylesheet" href="stylesheets/github-light.css">
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css">
+ <!--  <script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script> -->
+
+  <script src="leaflet-arrows.js"></script>
+  <script src="wind-scale.js"></script>
+
+
 
 	<style>
 
@@ -302,6 +313,7 @@ else {
         zoom: 7
 
       })
+
 
 
 
