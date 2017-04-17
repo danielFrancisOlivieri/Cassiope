@@ -351,7 +351,7 @@ else {
 
       sql: "SELECT * FROM cassiope_journey_name_finals_copy_2_merge",
 
-      cartocss: "#cassiope_journey_name_finals_copy_2_merge{  	  line-width: 3;  line-opacity: 1;  line-dasharray: 5,5;} 	  #final_merge[author='Epictetus'] {  line-color: #3EA99F;} 	  #final_merge[author='Galen'] {line-color: #4E9258;} 	  #final_merge[author='Strabo'] {line-color: #52D017;}  	  #final_merge[author='Cicero'] {   line-color: #850200;} 	  #final_merge[author='Gellius'] {line-color: #F11810;} 	  #final_merge[author='Jerome'] {line-color: #e885ad; } 	  #final_merge[author='Justinian'] {line-color: #b780d1;} 	  #final_merge[author='Suetonius'] {line-color: #7B00B4;} 	  #final_merge[author='Unknown'] {line-color: #FFFFFF;}"    }
+      cartocss: "#cassiope_journey_name_finals_copy_2_merge{  line-pattern-file: url(https://cdn0.iconfinder.com/data/icons/navigation-set-arrows-part-one/32/DoubleChevronRight-128.png);	  line-width: 3;  line-opacity: 1;  line-dasharray: 5,5;} 	  #final_merge[author='Epictetus'] {  line-color: #3EA99F;} 	  #final_merge[author='Galen'] {line-color: #4E9258;} 	  #final_merge[author='Strabo'] {line-color: #52D017;}  	  #final_merge[author='Cicero'] {   line-color: #850200;} 	  #final_merge[author='Gellius'] {line-color: #F11810;} 	  #final_merge[author='Jerome'] {line-color: #e885ad; } 	  #final_merge[author='Justinian'] {line-color: #b780d1;} 	  #final_merge[author='Suetonius'] {line-color: #7B00B4;} 	  #final_merge[author='Unknown'] {line-color: #FFFFFF;}"    }
 
 
 
